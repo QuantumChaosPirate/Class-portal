@@ -22,6 +22,29 @@
 
   if (!node) {
     document.getElementById("title").textContent = "Page not found";
+  } else if (node.type === "dynamic") {
+    document.title = node.title;
+    document.getElementById("crumb").innerHTML = node.crumb || "";
+    document.getElementById("title").textContent = node.title;
+    document.getElementById("buttons").innerHTML = '<div class="loading">Loading...</div>';
+
+    const parentFolderId = CONFIG.FOLDERS[node.folder];
+    const url = `https://www.googleapis.com/drive/v3/files?q='${parentFolderId}'+in+parents+and+mimeType='application/vnd.google-apps.folder'+and+trashed=false&key=${CONFIG.DRIVE_API_KEY}&fields=files(id,name)&orderBy=name`;
+
+    fetch(url).then(res => res.json()).then(data => {
+      if (!data.files || data.files.length === 0) {
+        document.getElementById("buttons").innerHTML = '<div class="loading">No folders here yet.</div>';
+        return;
+      }
+      document.getElementById("buttons").innerHTML = data.files.map(f =>
+        `<a class="btn" style="text-align:center; padding:14px; font-size:15px; font-weight:500;"
+           href="page.html?folderId=${f.id}&title=${encodeURIComponent(f.name)}&crumb=${encodeURIComponent((node.crumb || "") + " &rsaquo; " + f.name)}">${f.name}</a>`
+      ).join("");
+    }).catch(() => {
+      document.getElementById("buttons").innerHTML = '<div class="loading">Could not load folders.</div>';
+    });
+
+    document.getElementById("back-wrap").innerHTML = `<a class="btn" href="index.html">&larr; Home</a>`;
   } else {
     document.title = node.title;
     document.getElementById("crumb").innerHTML = node.crumb || "";

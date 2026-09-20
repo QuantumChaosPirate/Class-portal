@@ -20,14 +20,13 @@
 
 <script src="js/config.js"></script>
 <script>
-  // Reads the node from the URL, e.g. page.html?node=year9_level123_lessons_level1
-  // All the title/crumb/folder info comes from CONFIG.NAV, defined once in config.js.
   const params = new URLSearchParams(window.location.search);
   const nodeKey = params.get("node");
-  const node = CONFIG.NAV[nodeKey] || {};
+  const node = nodeKey ? (CONFIG.NAV[nodeKey] || {}) : {};
   const folderKey = node.folder;
-  const title = node.title || "Files";
-  const crumb = node.crumb || "";
+  const directFolderId = params.get("folderId");
+  const title = params.get("title") || node.title || "Files";
+  const crumb = params.get("crumb") || node.crumb || "";
 
   document.getElementById("title").textContent = title;
   document.getElementById("crumb").innerHTML = crumb;
@@ -43,7 +42,7 @@
 
   async function loadFiles() {
     const container = document.getElementById("file-list");
-    const folderId = CONFIG.FOLDERS[folderKey];
+    const folderId = directFolderId || CONFIG.FOLDERS[folderKey];
 
     if (!folderId || folderId === "FOLDER_ID_HERE") {
       container.innerHTML = '<div class="loading">This folder has not been linked up yet.</div>';
