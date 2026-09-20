@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ms Kylie Buhagiar</title>
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div style="text-align:center; margin-bottom:1.5rem;">
+  <div style="font-size:22px; font-weight:500; color:var(--accent);">Ms Kylie Buhagiar</div>
+  <div style="font-size:13px; color:var(--text-muted);">Lesson materials and class updates</div>
+</div>
+
+<div class="year-grid" id="year-buttons"></div>
+
+<div style="font-size:14px; color:var(--text-muted); margin-bottom:8px;">General noticeboard</div>
+<div class="card" style="position:relative; padding:1.25rem; min-height:230px;" id="board"></div>
+
+<div id="modal-wrap" style="display:none; margin-top:12px;" class="card">
+  <div style="padding:1rem;">
+    <div id="modal-title" style="font-weight:500; font-size:15px; margin-bottom:6px; color:var(--accent);"></div>
+    <div id="modal-msg" style="font-size:13px; line-height:1.6;"></div>
+  </div>
+</div>
+
+<div style="margin-top:1.75rem; text-align:center;">
+  <div style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">A little something for Mrs B</div>
+  <canvas id="tetris" width="140" height="260" style="background:#0a1a12; border:0.5px solid var(--card-border); border-radius:8px;"></canvas>
+  <div style="display:flex; justify-content:center; gap:14px; margin-top:8px; font-size:12px; color:var(--text-muted);">
+    <span>Score: <span id="score" style="color:var(--text); font-weight:500;">0</span></span>
+    <span id="game-status"></span>
+  </div>
+  <div style="margin-top:8px;">
+    <button class="btn" id="tetris-start">Play</button>
+  </div>
+  <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">Arrow keys to move/rotate, down to drop</div>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+  // ---- Year buttons, generated from the NAV tree ----
+  document.getElementById("year-buttons").innerHTML = CONFIG.NAV.home.children.map(key => {
+    const child = CONFIG.NAV[key];
+    return `<a class="btn" href="hub.html?node=${key}">${child.title}</a>`;
+  }).join("");
+
+  // ---- General noticeboard (post-its), reused CSV logic from noticeboard.html ----
+  const noteColors = ["#f4e28a", "#8fd6b0", "#f0a8a8", "#a8c8f0", "#c7a8f0"];
+  const noteRotations = [-4, 3, -2, 2, -3];
+  const notePositions = [
+    {top: 14, left: 18}, {top: 34, left: 210}, {top: 10, left: 400},
+    {top: 120, left: 100}, {top: 130, left: 320}
+  ];
+
+  function parseCSV(text) {
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+        else if (c === '"') { inQuotes = false; }
+        else { field += c; }
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ',') { row.push(field); field = ""; }
+        else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; }
+        else if (c !== '\r') { field += c; }
+      }
+    }
+    if (field || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  async function loadBoard() {
+    const board = document.getElementById("board");
+    try {
+      const res = await fetch(CONFIG.SHEET_CSV_URL);
+      const text = await res.text();
+      const rows = parseCSV(text);
+      const header = rows[0].map(h => h.trim());
+      const idx = {
+        classCode: header.indexOf("ClassCode"), title: header.indexOf("Title"),
+        message: header.indexOf("Message"), datePosted: header.indexOf("DatePosted"),
+        expiryDate: header.indexOf("ExpiryDate"), remove: header.indexOf("Remove")
+      };
+      const now = new Date();
+      const notices = rows.slice(1).filter(r => {
+        if (!r[idx.classCode]) return false;
+        const isRemoved = String(r[idx.remove]).toUpperCase() === "TRUE";
+        const expiry = new Date(r[idx.expiryDate]);
+        const notExpired = isNaN(expiry) || expiry >= now;
+        return r[idx.classCode].trim() === "general" && !isRemoved && notExpired;
+      }).sort((a, b) => new Date(b[idx.datePosted]) - new Date(a[idx.datePosted])).slice(0, 5);
+
+      if (notices.length === 0) {
+        board.innerHTML = '<div class="loading">No announcements right now.</div>';
+        return;
+      }
+
+      board.innerHTML = notices.map((r, i) => {
+        const pos = notePositions[i % notePositions.length];
+        const color = noteColors[i % noteColors.length];
+        const rot = noteRotations[i % noteRotations.length];
+        const summary = r[idx.message].slice(0, 40) + (r[idx.message].length > 40 ? "..." : "");
+        return `<div class="note" data-title="${r[idx.title].replace(/"/g,'&quot;')}" data-msg="${r[idx.message].replace(/"/g,'&quot;')}"
+          style="top:${pos.top}px; left:${pos.left}px; background:${color}; transform:rotate(${rot}deg);">
+          <div style="font-weight:500; margin-bottom:4px;">${r[idx.title]}</div>
+          <div style="font-size:11px;">${summary}</div>
+        </div>`;
+      }).join("") + '<div style="height:200px;"></div>';
+
+      document.querySelectorAll(".note").forEach(el => {
+        el.addEventListener("click", () => {
+          document.getElementById("modal-title").textContent = el.dataset.title;
+          document.getElementById("modal-msg").textContent = el.dataset.msg;
+          document.getElementById("modal-wrap").style.display = "block";
+        });
+      });
+    } catch (err) {
+      board.innerHTML = '<div class="loading">Could not load announcements.</div>';
+    }
+  }
+  loadBoard();
+
+  // ---- Tetris ----
+  const canvas = document.getElementById('tetris');
+  const ctx = canvas.getContext('2d');
+  const cols = 7, rows = 13, size = 20;
+  const colors = {I:'#7fd9ad', O:'#f4e28a', T:'#a8c8f0', S:'#8fd6b0', Z:'#f0a8a8', J:'#c7a8f0', L:'#f0c48a'};
+  const shapeDefs = {
+    I: [[1,1,1,1]], O: [[1,1],[1,1]], T: [[0,1,0],[1,1,1]],
+    S: [[0,1,1],[1,1,0]], Z: [[1,1,0],[0,1,1]], J: [[1,0,0],[1,1,1]], L: [[0,0,1],[1,1,1]]
+  };
+  let grid = Array.from({length: rows}, () => Array(cols).fill(null));
+  let piece, pieceKey, px, py, running = false, timer = null, score = 0, speed = 500;
+
+  function rotateMat(m){
+    const h = m.length, w = m[0].length;
+    const r = Array.from({length:w}, () => Array(h).fill(0));
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++) r[x][h-1-y] = m[y][x];
+    return r;
+  }
+  function newPiece(){
+    const keys = Object.keys(shapeDefs);
+    pieceKey = keys[Math.floor(Math.random()*keys.length)];
+    piece = shapeDefs[pieceKey].map(r => r.slice());
+    px = Math.floor(cols/2) - Math.ceil(piece[0].length/2); py = 0;
+  }
+  function collides(p, ox, oy){
+    for(let y=0;y<p.length;y++) for(let x=0;x<p[y].length;x++){
+      if(p[y][x]){
+        const nx = ox+x, ny = oy+y;
+        if(nx<0||nx>=cols||ny>=rows) return true;
+        if(ny>=0 && grid[ny][nx]) return true;
+      }
+    }
+    return false;
+  }
+  function merge(){
+    for(let y=0;y<piece.length;y++) for(let x=0;x<piece[y].length;x++){
+      if(piece[y][x]) grid[py+y][px+x] = pieceKey;
+    }
+  }
+  function clearLines(){
+    const before = grid.length;
+    grid = grid.filter(row => row.some(c => !c));
+    const cleared = before - grid.length;
+    if(cleared > 0){
+      score += cleared * 100;
+      document.getElementById('score').textContent = score;
+      speed = Math.max(150, speed - cleared * 15);
+    }
+    while(grid.length < rows) grid.unshift(Array(cols).fill(null));
+  }
+  function draw(){
+    ctx.fillStyle = '#0a1a12';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(let y=0;y<rows;y++) for(let x=0;x<cols;x++) if(grid[y][x]){ ctx.fillStyle = colors[grid[y][x]]; ctx.fillRect(x*size,y*size,size-1,size-1); }
+    if(piece){
+      ctx.fillStyle = colors[pieceKey];
+      for(let y=0;y<piece.length;y++) for(let x=0;x<piece[y].length;x++) if(piece[y][x]) ctx.fillRect((px+x)*size,(py+y)*size,size-1,size-1);
+    }
+  }
+  function endGame(){
+    running = false; clearInterval(timer);
+    document.getElementById('game-status').textContent = 'Game over';
+    document.getElementById('tetris-start').textContent = 'Play again';
+  }
+  function tick(){
+    if(!collides(piece, px, py+1)){ py++; }
+    else {
+      merge(); clearLines(); newPiece();
+      if(collides(piece,px,py)){ merge(); draw(); endGame(); return; }
+    }
+    draw();
+  }
+  function startGame(){
+    grid = Array.from({length: rows}, () => Array(cols).fill(null));
+    score = 0; speed = 500;
+    document.getElementById('score').textContent = '0';
+    document.getElementById('game-status').textContent = '';
+    document.getElementById('tetris-start').textContent = 'Play';
+    newPiece(); running = true; draw();
+    clearInterval(timer);
+    timer = setInterval(tick, speed);
+  }
+  document.getElementById('tetris-start').addEventListener('click', startGame);
+  document.addEventListener('keydown', (e) => {
+    if(!running) return;
+    if(e.key === 'ArrowLeft' && !collides(piece, px-1, py)) px--;
+    if(e.key === 'ArrowRight' && !collides(piece, px+1, py)) px++;
+    if(e.key === 'ArrowDown') tick();
+    if(e.key === 'ArrowUp'){
+      const rotated = rotateMat(piece);
+      if(!collides(rotated, px, py)) piece = rotated;
+      else if(!collides(rotated, px-1, py)){ piece = rotated; px--; }
+      else if(!collides(rotated, px+1, py)){ piece = rotated; px++; }
+    }
+    draw();
+  });
+  draw();
+</script>
+</body>
+</html>

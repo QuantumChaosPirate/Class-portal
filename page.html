@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lesson Materials</title>
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="crumb" id="crumb"></div>
+<div class="page-title" id="title">Loading...</div>
+
+<div class="card" id="file-list">
+  <div class="loading">Loading files...</div>
+</div>
+
+<div style="margin-top: 1.25rem;">
+  <a class="btn" href="#" id="back-link">&larr; Back</a>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+  // Reads the node from the URL, e.g. page.html?node=year9_level123_lessons_level1
+  // All the title/crumb/folder info comes from CONFIG.NAV, defined once in config.js.
+  const params = new URLSearchParams(window.location.search);
+  const nodeKey = params.get("node");
+  const node = CONFIG.NAV[nodeKey] || {};
+  const folderKey = node.folder;
+  const title = node.title || "Files";
+  const crumb = node.crumb || "";
+
+  document.getElementById("title").textContent = title;
+  document.getElementById("crumb").innerHTML = crumb;
+  document.getElementById("back-link").href = "javascript:history.back()";
+
+  const iconFor = (mimeType) => {
+    if (mimeType.includes("pdf")) return "📄";
+    if (mimeType.includes("presentation")) return "📊";
+    if (mimeType.includes("audio")) return "🎧";
+    if (mimeType.includes("document")) return "🔗";
+    return "📁";
+  };
+
+  async function loadFiles() {
+    const container = document.getElementById("file-list");
+    const folderId = CONFIG.FOLDERS[folderKey];
+
+    if (!folderId || folderId === "FOLDER_ID_HERE") {
+      container.innerHTML = '<div class="loading">This folder has not been linked up yet.</div>';
+      return;
+    }
+
+    const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&key=${CONFIG.DRIVE_API_KEY}&fields=files(id,name,mimeType,modifiedTime,webContentLink,webViewLink)&orderBy=modifiedTime desc`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data.files || data.files.length === 0) {
+        container.innerHTML = '<div class="loading">No files here yet.</div>';
+        return;
+      }
+
+      container.innerHTML = data.files.map(f => {
+        const link = f.webContentLink || f.webViewLink;
+        const date = new Date(f.modifiedTime).toLocaleDateString();
+        return `<a class="file-row" href="${link}" target="_blank" rel="noopener">
+          <span>${iconFor(f.mimeType)}</span>
+          <span style="flex:1">
+            <div class="file-name">${f.name}</div>
+            <div class="file-meta">Modified ${date}</div>
+          </span>
+        </a>`;
+      }).join("");
+    } catch (err) {
+      container.innerHTML = '<div class="loading">Could not load files. Check your internet connection and try again.</div>';
+    }
+  }
+
+  loadFiles();
+</script>
+</body>
+</html>

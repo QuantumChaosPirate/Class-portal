@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ms Kylie Buhagiar</title>
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="crumb" id="crumb"></div>
+<div class="page-title" id="title">Loading...</div>
+
+<div id="buttons" style="display:flex; flex-direction:column; gap:12px;"></div>
+
+<div style="margin-top:1.5rem;" id="back-wrap"></div>
+
+<script src="js/config.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const nodeKey = params.get("node") || "home";
+  const node = CONFIG.NAV[nodeKey];
+
+  if (!node) {
+    document.getElementById("title").textContent = "Page not found";
+  } else {
+    document.title = node.title;
+    document.getElementById("crumb").innerHTML = node.crumb || "";
+    document.getElementById("title").textContent = node.title;
+
+    const targetFor = (childKey) => {
+      const child = CONFIG.NAV[childKey];
+      if (!child) return "#";
+      if (child.type === "files") return `page.html?node=${childKey}`;
+      if (child.type === "notice") return `noticeboard.html?node=${childKey}`;
+      return `hub.html?node=${childKey}`;
+    };
+
+    document.getElementById("buttons").innerHTML = (node.children || []).map(childKey => {
+      const child = CONFIG.NAV[childKey];
+      const label = child ? child.title : childKey;
+      return `<a class="btn" style="text-align:center; padding:14px; font-size:15px; font-weight:500;" href="${targetFor(childKey)}">${label}</a>`;
+    }).join("");
+
+    if (nodeKey !== "home") {
+      document.getElementById("back-wrap").innerHTML =
+        `<a class="btn" href="index.html">&larr; Home</a>`;
+    }
+  }
+</script>
+</body>
+</html>

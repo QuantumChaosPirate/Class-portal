@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Noticeboard</title>
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="crumb" id="crumb"></div>
+<div class="page-title" id="title">Noticeboard</div>
+
+<div class="card" id="notice-list">
+  <div class="loading">Loading announcements...</div>
+</div>
+
+<div style="margin-top: 1.25rem;">
+  <a class="btn" href="#" id="back-link">&larr; Back</a>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const nodeKey = params.get("node");
+  const node = CONFIG.NAV[nodeKey] || {};
+  const classKey = node.noticeClass || "general";
+  const crumb = node.crumb || "";
+
+  document.getElementById("title").textContent = node.title || "Noticeboard";
+  document.getElementById("crumb").innerHTML = crumb;
+  document.getElementById("back-link").href = "javascript:history.back()";
+
+  // Minimal CSV parser — good enough for the Sheet's simple structure
+  function parseCSV(text) {
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+        else if (c === '"') { inQuotes = false; }
+        else { field += c; }
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ',') { row.push(field); field = ""; }
+        else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; }
+        else if (c !== '\r') { field += c; }
+      }
+    }
+    if (field || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  async function loadNotices() {
+    const container = document.getElementById("notice-list");
+    const wantedCode = classKey;
+
+    try {
+      const res = await fetch(CONFIG.SHEET_CSV_URL);
+      const text = await res.text();
+      const rows = parseCSV(text);
+      const header = rows[0].map(h => h.trim());
+      const idx = {
+        classCode: header.indexOf("ClassCode"),
+        title: header.indexOf("Title"),
+        message: header.indexOf("Message"),
+        datePosted: header.indexOf("DatePosted"),
+        expiryDate: header.indexOf("ExpiryDate"),
+        remove: header.indexOf("Remove")
+      };
+
+      const now = new Date();
+      const notices = rows.slice(1).filter(r => {
+        if (!r[idx.classCode]) return false;
+        const isRemoved = String(r[idx.remove]).toUpperCase() === "TRUE";
+        const expiry = new Date(r[idx.expiryDate]);
+        const notExpired = isNaN(expiry) || expiry >= now;
+        return r[idx.classCode].trim() === wantedCode && !isRemoved && notExpired;
+      }).sort((a, b) => new Date(b[idx.datePosted]) - new Date(a[idx.datePosted]));
+
+      if (notices.length === 0) {
+        container.innerHTML = '<div class="loading">No announcements right now.</div>';
+        return;
+      }
+
+      container.innerHTML = notices.map(r => {
+        const date = new Date(r[idx.datePosted]).toLocaleDateString();
+        return `<div class="file-row" style="display:block;">
+          <div class="file-name" style="font-weight:500; margin-bottom:4px;">${r[idx.title]}</div>
+          <div class="file-meta" style="margin-bottom:6px;">${date}</div>
+          <div style="font-size:13px; white-space: pre-wrap;">${r[idx.message]}</div>
+        </div>`;
+      }).join("");
+    } catch (err) {
+      container.innerHTML = '<div class="loading">Could not load announcements. Check your internet connection and try again.</div>';
+    }
+  }
+
+  loadNotices();
+</script>
+</body>
+</html>

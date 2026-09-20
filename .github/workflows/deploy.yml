@@ -1,0 +1,42 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Inject Drive API key from secret
+        # This replaces the placeholder in config.js with the real key,
+        # which is stored in Settings > Secrets and variables > Actions
+        # as DRIVE_API_KEY. The real key never touches the repo itself —
+        # only this build output does.
+        run: |
+          sed -i "s|__DRIVE_API_KEY__|${{ secrets.DRIVE_API_KEY }}|g" js/config.js
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

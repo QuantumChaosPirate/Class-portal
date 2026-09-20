@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500&display=swap');
+
+:root {
+  --bg: #0f1f18;
+  --card: #12291d;
+  --card-border: #234a34;
+  --accent: #7fd9ad;
+  --text: #e8f2ea;
+  --text-muted: #9fc2ac;
+  --btn: #163826;
+  --btn-border: #2e6b48;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Lexend', sans-serif;
+  line-height: 1.6;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a { color: var(--accent); }
+
+.crumb { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.page-title { font-size: 20px; font-weight: 500; color: var(--accent); margin-bottom: 16px; }
+
+.card {
+  background: var(--card);
+  border: 0.5px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 0.5px solid var(--card-border);
+  text-decoration: none;
+  color: var(--text);
+}
+.file-row:last-child { border-bottom: none; }
+.file-row:hover { background: #163826; }
+.file-name { font-size: 14px; }
+.file-meta { font-size: 11px; color: var(--text-muted); }
+
+.btn {
+  background: var(--btn);
+  border: 0.5px solid var(--btn-border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.year-grid { display: flex; gap: 12px; margin-bottom: 1.75rem; }
+.year-grid .btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 500; }
+
+.note {
+  position: absolute;
+  width: 150px;
+  padding: 10px;
+  border-radius: 2px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #222;
+}
+
+.loading { font-size: 13px; color: var(--text-muted); padding: 16px; }
