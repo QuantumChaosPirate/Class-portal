@@ -49,11 +49,16 @@
       return;
     }
 
-    const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&key=${CONFIG.DRIVE_API_KEY}&fields=files(id,name,mimeType,modifiedTime,webContentLink,webViewLink)&orderBy=modifiedTime desc`;
+    const url = `${CONFIG.DRIVE_LISTER_URL}?folderId=${folderId}&type=files`;
 
     try {
       const res = await fetch(url);
       const data = await res.json();
+
+      if (data.error) {
+        container.innerHTML = `<div class="loading">Error: ${data.error}</div>`;
+        return;
+      }
 
       if (!data.files || data.files.length === 0) {
         container.innerHTML = '<div class="loading">No files here yet.</div>';

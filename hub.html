@@ -29,9 +29,13 @@
     document.getElementById("buttons").innerHTML = '<div class="loading">Loading...</div>';
 
     const parentFolderId = CONFIG.FOLDERS[node.folder];
-    const url = `https://www.googleapis.com/drive/v3/files?q='${parentFolderId}'+in+parents+and+mimeType='application/vnd.google-apps.folder'+and+trashed=false&key=${CONFIG.DRIVE_API_KEY}&fields=files(id,name)&orderBy=name`;
+    const url = `${CONFIG.DRIVE_LISTER_URL}?folderId=${parentFolderId}&type=folders`;
 
     fetch(url).then(res => res.json()).then(data => {
+      if (data.error) {
+        document.getElementById("buttons").innerHTML = `<div class="loading">Error: ${data.error}</div>`;
+        return;
+      }
       if (!data.files || data.files.length === 0) {
         document.getElementById("buttons").innerHTML = '<div class="loading">No folders here yet.</div>';
         return;

@@ -4,18 +4,25 @@
  * The whole site's structure lives in NAV below. To add a new year,
  * class, or folder, edit NAV — no new HTML files needed.
  *
+ * Folder contents are read via a Google Apps Script Web App (folder_lister.gs),
+ * NOT the Drive API directly — Drive's files.list requires OAuth and doesn't
+ * work with a bare API key, even for fully public folders. The Apps Script
+ * runs under the site owner's own Google account permissions instead.
+ *
  * Node types:
  *   "hub"    - a page of buttons linking to child nodes (default if no type given)
  *   "files"  - a page listing files from a Drive folder (needs `folder`)
  *   "notice" - a page listing announcements for a class (needs `noticeClass`)
+ *   "dynamic"- a page that auto-discovers subfolders from Drive (needs `folder`)
  */
 
 const CONFIG = {
-  DRIVE_API_KEY: "__DRIVE_API_KEY__", // replaced at deploy time by GitHub Actions
+  DRIVE_LISTER_URL: "https://script.google.com/macros/s/AKfycby8-Nbx5GS8mIPcw8DOak85f71YygeLmeaS9pyLfQX41JFKQ5RXoOdT4bIEqqaer0pP/exec",
+
   SHEET_CSV_URL: "PASTE_PUBLISHED_SHEET_CSV_URL_HERE",
 
   FOLDERS: {
-    year9_level123_lessons: "1iacUd-BK9WZfdH4yeygdMRHIBN9BaH97",       // container — subfolders inside are auto-discovered
+    year9_level123_lessons: "1iacUd-BK9WZfdH4yeygdMRHIBN9BaH97",
     year9_level123_resources: "1HbFZAm-MoBlU9uyChjbXXGa7mAxpVrHJ",
     year9_level123_studyboards: "1kvtBOwSGEq-OG0-9LV9GnkdY6uV1w_DQ",
     year9_ccp_lessons: "1jVT23yWS-549yWJIETA91k-DqN89as-V",

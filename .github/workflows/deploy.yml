@@ -21,14 +21,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Inject Drive API key from secret
-        # This replaces the placeholder in config.js with the real key,
-        # which is stored in Settings > Secrets and variables > Actions
-        # as DRIVE_API_KEY. The real key never touches the repo itself —
-        # only this build output does.
-        run: |
-          sed -i "s|__DRIVE_API_KEY__|${{ secrets.GDRIVE_API_KEY }}|g" js/config.js
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
