@@ -19,7 +19,7 @@
 const CONFIG = {
   DRIVE_LISTER_URL: "https://script.google.com/macros/s/AKfycby8-Nbx5GS8mIPcw8DOak85f71YygeLmeaS9pyLfQX41JFKQ5RXoOdT4bIEqqaer0pP/exec",
 
-  SHEET_CSV_URL: "PASTE_PUBLISHED_SHEET_CSV_URL_HERE",
+  SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKJyAT9ZP41j4vSSXPe7zVc609KLAVwBNsYYE3iJgQfjT8J1MA6WDvSTrWgYdZ8uyFY5GIyrUyaaUD/pub?gid=0&single=true&output=csv",
 
   FOLDERS: {
     year9_level123_lessons: "1iacUd-BK9WZfdH4yeygdMRHIBN9BaH97",
