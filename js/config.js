@@ -15,18 +15,18 @@ const CONFIG = {
   SHEET_CSV_URL: "PASTE_PUBLISHED_SHEET_CSV_URL_HERE",
 
   FOLDERS: {
-    year9_level123_lessons: "FOLDER_ID_HERE",       // container — subfolders inside are auto-discovered
-    year9_level123_resources: "FOLDER_ID_HERE",
-    year9_level123_studyboards: "FOLDER_ID_HERE",
-    year9_ccp_lessons: "FOLDER_ID_HERE",
-    year9_ccp_resources: "FOLDER_ID_HERE",
-    year9_ccp_studyboards: "FOLDER_ID_HERE",
-    year10_level123_lessons: "FOLDER_ID_HERE",
-    year10_level123_resources: "FOLDER_ID_HERE",
-    year10_level123_studyboards: "FOLDER_ID_HERE",
-    year10_ccp_lessons: "FOLDER_ID_HERE",
-    year10_ccp_resources: "FOLDER_ID_HERE",
-    year10_ccp_studyboards: "FOLDER_ID_HERE"
+    year9_level123_lessons: "1iacUd-BK9WZfdH4yeygdMRHIBN9BaH97",       // container — subfolders inside are auto-discovered
+    year9_level123_resources: "1HbFZAm-MoBlU9uyChjbXXGa7mAxpVrHJ",
+    year9_level123_studyboards: "1kvtBOwSGEq-OG0-9LV9GnkdY6uV1w_DQ",
+    year9_ccp_lessons: "1jVT23yWS-549yWJIETA91k-DqN89as-V",
+    year9_ccp_resources: "1bLkd0ujwjtZUF479TMPjKgjuCoajptuL",
+    year9_ccp_studyboards: "1y_ikLKQ2Iv1khfQeMHLm2GU4ML3pmr-k",
+    year10_level123_lessons: "1Rfz2U_dPyDAAaqvqC7dDXcwf4h5lQUX7",
+    year10_level123_resources: "1KMLSDX5ODiEmK2_K7zTwslLCYL7notji",
+    year10_level123_studyboards: "1rj7dAk9VhhmArYtrDNk7_H2Rd3Fp_hn8",
+    year10_ccp_lessons: "14eoKOXjitWWAJl3LNQ08lcoieiukuCBR",
+    year10_ccp_resources: "1nmPiYCvYMl5wUt-RRYzIjD1pgKbGX25i",
+    year10_ccp_studyboards: "10ir5tSxUP5lftfZju8dQA_7fNYF6Zw8w"
   },
 
   NAV: {
