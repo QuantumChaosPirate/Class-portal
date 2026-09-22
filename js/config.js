@@ -47,16 +47,16 @@ const CONFIG = {
       children: ["year9_level123", "year9_ccp"]
     },
     year9_level123: {
-      title: "Levels 1-2-3", crumb: "Year 9 &rsaquo; Levels 1-2-3",
+      title: "Level 1-2-3", crumb: "Year 9 &rsaquo; Level 1-2-3",
       children: ["year9_level123_lessons", "year9_level123_resources", "year9_level123_noticeboard", "year9_level123_studyboards"]
     },
     year9_level123_lessons: {
-      title: "Lessons", type: "dynamic", crumb: "Year 9 &rsaquo; Levels 1-2-3 &rsaquo; Lessons",
+      title: "Lessons", type: "dynamic", crumb: "Year 9 &rsaquo; Level 1-2-3 &rsaquo; Lessons",
       folder: "year9_level123_lessons"
     },
-    year9_level123_resources: { title: "Resources", type: "files", crumb: "Year 9 &rsaquo; Levels 1-2-3 &rsaquo; Resources", folder: "year9_level123_resources" },
-    year9_level123_studyboards: { title: "Study Boards", type: "files", crumb: "Year 9 &rsaquo; Levels 1-2-3 &rsaquo; Study Boards", folder: "year9_level123_studyboards" },
-    year9_level123_noticeboard: { title: "Noticeboard", type: "notice", crumb: "Year 9 &rsaquo; Levels 1-2-3 &rsaquo; Noticeboard", noticeClass: "year9l123" },
+    year9_level123_resources: { title: "Resources", type: "files", crumb: "Year 9 &rsaquo; Level 1-2-3 &rsaquo; Resources", folder: "year9_level123_resources" },
+    year9_level123_studyboards: { title: "Study Boards", type: "files", crumb: "Year 9 &rsaquo; Level 1-2-3 &rsaquo; Study Boards", folder: "year9_level123_studyboards" },
+    year9_level123_noticeboard: { title: "Noticeboard", type: "notice", crumb: "Year 9 &rsaquo; Level 1-2-3 &rsaquo; Noticeboard", noticeClass: "year9l123" },
 
     year9_ccp: {
       title: "CCP", crumb: "Year 9 &rsaquo; CCP",
@@ -75,16 +75,16 @@ const CONFIG = {
       children: ["year10_level123", "year10_ccp"]
     },
     year10_level123: {
-      title: "Levels 1-2-3", crumb: "Year 10 &rsaquo; Levels 1-2-3",
+      title: "Level 1-2-3", crumb: "Year 10 &rsaquo; Level 1-2-3",
       children: ["year10_level123_lessons", "year10_level123_resources", "year10_level123_noticeboard", "year10_level123_studyboards"]
     },
     year10_level123_lessons: {
-      title: "Lessons", type: "dynamic", crumb: "Year 10 &rsaquo; Levels 1-2-3 &rsaquo; Lessons",
+      title: "Lessons", type: "dynamic", crumb: "Year 10 &rsaquo; Level 1-2-3 &rsaquo; Lessons",
       folder: "year10_level123_lessons"
     },
-    year10_level123_resources: { title: "Resources", type: "files", crumb: "Year 10 &rsaquo; Levels 1-2-3 &rsaquo; Resources", folder: "year10_level123_resources" },
-    year10_level123_studyboards: { title: "Study Boards", type: "files", crumb: "Year 10 &rsaquo; Levels 1-2-3 &rsaquo; Study Boards", folder: "year10_level123_studyboards" },
-    year10_level123_noticeboard: { title: "Noticeboard", type: "notice", crumb: "Year 10 &rsaquo; Levels 1-2-3 &rsaquo; Noticeboard", noticeClass: "year10l123" },
+    year10_level123_resources: { title: "Resources", type: "files", crumb: "Year 10 &rsaquo; Level 1-2-3 &rsaquo; Resources", folder: "year10_level123_resources" },
+    year10_level123_studyboards: { title: "Study Boards", type: "files", crumb: "Year 10 &rsaquo; Level 1-2-3 &rsaquo; Study Boards", folder: "year10_level123_studyboards" },
+    year10_level123_noticeboard: { title: "Noticeboard", type: "notice", crumb: "Year 10 &rsaquo; Level 1-2-3 &rsaquo; Noticeboard", noticeClass: "year10l123" },
 
     year10_ccp: {
       title: "CCP", crumb: "Year 10 &rsaquo; CCP",
