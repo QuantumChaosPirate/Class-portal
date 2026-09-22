@@ -17,7 +17,7 @@
  */
 
 const CONFIG = {
-  DRIVE_LISTER_URL: "https://script.google.com/macros/s/AKfycby8-Nbx5GS8mIPcw8DOak85f71YygeLmeaS9pyLfQX41JFKQ5RXoOdT4bIEqqaer0pP/exec",
+  DRIVE_LISTER_URL: "https://script.google.com/macros/s/AKfycbyximrPRpH-X9k2NSGsOoWM0VEXWjl_lIvHo7kiDq6mZGTsH8h8aG9qYkrCRZhDu3Bi/exec",
 
   SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKJyAT9ZP41j4vSSXPe7zVc609KLAVwBNsYYE3iJgQfjT8J1MA6WDvSTrWgYdZ8uyFY5GIyrUyaaUD/pub?gid=0&single=true&output=csv",
 
