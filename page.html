@@ -66,13 +66,15 @@
       }
 
       container.innerHTML = data.files.map(f => {
-        const link = f.webContentLink || f.webViewLink;
-        const date = new Date(f.modifiedTime).toLocaleDateString();
+        const isVideo = f.isVideoLink;
+        const link = isVideo ? f.videoUrl : (f.webContentLink || f.webViewLink);
+        const icon = isVideo ? "▶️" : iconFor(f.mimeType);
+        const label = isVideo ? "Watch" : "Modified " + f.modifiedTime;
         return `<a class="file-row" href="${link}" target="_blank" rel="noopener">
-          <span>${iconFor(f.mimeType)}</span>
+          <span>${icon}</span>
           <span style="flex:1">
             <div class="file-name">${f.name}</div>
-            <div class="file-meta">Modified ${date}</div>
+            <div class="file-meta">${label}</div>
           </span>
         </a>`;
       }).join("");
