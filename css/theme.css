@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500&display=swap');
 
 :root {
-  --bg: #16352a;
+  --bg: #0b3d24;
   --card: #12291d;
   --card-border: #234a34;
   --accent: #7fd9ad;
-  --text: #e8f2ea;
+  --text: #ffffff;
   --text-muted: #9fc2ac;
   --btn: #163826;
   --btn-border: #2e6b48;
