@@ -40,7 +40,7 @@ const CONFIG = {
       children: ["year9_lessons", "year9_resources", "year9_noticeboard", "year9_studyboards"]
     },
     year9_lessons: {
-      title: "Lessons", type: "dynamic", crumb: "Year 9 Social Studies - General &rsaquo; Lessons",
+      title: "Lessons", type: "files", crumb: "Year 9 Social Studies - General &rsaquo; Lessons",
       folder: "year9_lessons"
     },
     year9_resources: { title: "Resources", type: "files", crumb: "Year 9 Social Studies - General &rsaquo; Resources", folder: "year9_resources" },
@@ -52,7 +52,7 @@ const CONFIG = {
       children: ["year10_lessons", "year10_resources", "year10_noticeboard", "year10_studyboards"]
     },
     year10_lessons: {
-      title: "Lessons", type: "dynamic", crumb: "Year 10 Social Studies - General &rsaquo; Lessons",
+      title: "Lessons", type: "files", crumb: "Year 10 Social Studies - General &rsaquo; Lessons",
       folder: "year10_lessons"
     },
     year10_resources: { title: "Resources", type: "files", crumb: "Year 10 Social Studies - General &rsaquo; Resources", folder: "year10_resources" },
